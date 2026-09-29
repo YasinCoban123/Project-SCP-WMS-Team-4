@@ -41,9 +41,9 @@
       },
       "item_types": {
         "get": true,
-        "post": false,
-        "put": false,
-        "delete": false
+        "post": true,
+        "put": true,
+        "delete": true
       },
       "suppliers": {
         "get": true,
@@ -53,9 +53,9 @@
       },
       "orders": {
         "get": true,
-        "post": false,
-        "put": false,
-        "delete": false
+        "post": true,
+        "put": true,
+        "delete": true
       },
       "clients": {
         "get": true,
@@ -71,9 +71,9 @@
       },
       "inventories": {
         "get": true,
-        "post": false,
-        "put": false,
-        "delete": false
+        "post": true,
+        "put": true,
+        "delete": true
       }
     }
   },
