@@ -427,11 +427,22 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/main
 # Python virtual environment
 .venv/
 venv/
 env/
 ENV/
+<<<<<<< HEAD
+=======
+.venv.bak/
+venv.bak/
+
+# Common venv directories/files created by Python
+>>>>>>> origin/main
 bin/
 lib/
 include/
@@ -441,6 +452,7 @@ Lib/
 pyvenv.cfg
 pip-selfcheck.json
 
+<<<<<<< HEAD
 # Python cache
 __pycache__/
 .pytest_cache/
@@ -448,3 +460,10 @@ __pycache__/
 # Environment variables
 .env
 *.env
+=======
+# Cache folders
+__pycache__/
+.pytest_cache/
+
+ 
+>>>>>>> origin/main
