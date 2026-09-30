@@ -81,3 +81,99 @@ def test_delete_DeletesNonExistentShipment10000(_data):
 
     # Verify that the status code is 404 (Not Found)
     assert response.status_code == 404
+
+
+def test_get_shipments_without_api_key_returns_401(_data):
+    url = _data['url'] + 'shipments'
+
+    response = requests.get(url)
+
+    assert response.status_code == 401
+
+
+def test_post_shipments_without_api_key_returns_401(_data):
+    url = _data['url'] + 'shipments'
+
+    response = requests.post(url, json={})
+
+    assert response.status_code == 401
+
+
+def test_post_shipments_with_invalid_api_key_returns_401(_data):
+    url = _data['url'] + 'shipments'
+
+    response = requests.post(url, json={}, headers={'API_KEY': 'invalid-key'})
+
+    assert response.status_code == 401
+
+
+def test_post_shipment_route_without_api_key_returns_401(_data):
+    url = _data['url'] + 'shipments/1'
+
+    response = requests.post(url, json={})
+
+    assert response.status_code == 401
+
+
+def test_put_shipment_without_api_key_returns_401(_data):
+    url = _data['url'] + 'shipments/1'
+
+    response = requests.put(url, json={})
+
+    assert response.status_code == 401
+
+
+def test_put_shipment_with_invalid_api_key_returns_401(_data):
+    url = _data['url'] + 'shipments/1'
+
+    response = requests.put(url, json={}, headers={'API_KEY': 'invalid-key'})
+
+    assert response.status_code == 401
+
+
+def test_delete_shipment_without_api_key_returns_401(_data):
+    url = _data['url'] + 'shipments/1'
+
+    response = requests.delete(url)
+
+    assert response.status_code == 401
+
+
+def test_delete_shipment_with_invalid_api_key_returns_401(_data):
+    url = _data['url'] + 'shipments/1'
+
+    response = requests.delete(url, headers={'API_KEY': 'invalid-key'})
+
+    assert response.status_code == 401
+
+
+def test_get_shipments_with_invalid_api_key_returns_401(_data):
+    url = _data['url'] + 'shipments'
+
+    response = requests.get(url, headers={'API_KEY': 'invalid-key'})
+
+    assert response.status_code == 401
+
+
+def test_post_shipment_route_with_invalid_api_key_returns_401(_data):
+    url = _data['url'] + 'shipments/1'
+
+    response = requests.post(url, json={}, headers={'API_KEY': 'invalid-key'})
+
+    assert response.status_code == 401
+
+
+def test_put_shipment_items_without_api_key_returns_401(_data):
+    url = _data['url'] + 'shipments/1/items'
+
+    response = requests.put(url, json={})
+
+    assert response.status_code == 401
+
+
+def test_delete_unknown_shipment_without_api_key_returns_401(_data):
+    url = _data['url'] + 'shipments/10000'
+
+    response = requests.delete(url)
+
+    assert response.status_code == 401
