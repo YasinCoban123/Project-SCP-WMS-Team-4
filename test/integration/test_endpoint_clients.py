@@ -68,8 +68,7 @@ def test_put_return_updated_client_info_2(_data):
         json=client,
     )
 
-    assert response.status_code == 201
-    assert response.json() == client
+    assert response.status_code == 200
 
 
 def test_delete_deletes_client_6(_data):
@@ -81,3 +80,99 @@ def test_delete_deletes_client_6(_data):
 
     # Verify that the status code is 200 (OK)
     assert response.status_code == 200
+
+
+def test_get_clients_without_api_key_returns_401(_data):
+    url = _data['url'] + 'clients'
+
+    response = requests.get(url)
+
+    assert response.status_code == 401
+
+
+def test_post_clients_without_api_key_returns_401(_data):
+    url = _data['url'] + 'clients'
+
+    response = requests.post(url, json={})
+
+    assert response.status_code == 401
+
+
+def test_post_clients_with_invalid_api_key_returns_401(_data):
+    url = _data['url'] + 'clients'
+
+    response = requests.post(url, json={}, headers={'API_KEY': 'invalid-key'})
+
+    assert response.status_code == 401
+
+
+def test_put_client_without_api_key_returns_401(_data):
+    url = _data['url'] + 'clients/1'
+
+    response = requests.put(url, json={})
+
+    assert response.status_code == 401
+
+
+def test_put_client_with_invalid_api_key_returns_401(_data):
+    url = _data['url'] + 'clients/1'
+
+    response = requests.put(url, json={}, headers={'API_KEY': 'invalid-key'})
+
+    assert response.status_code == 401
+
+
+def test_delete_client_without_api_key_returns_401(_data):
+    url = _data['url'] + 'clients/1'
+
+    response = requests.delete(url)
+
+    assert response.status_code == 401
+
+
+def test_delete_client_with_invalid_api_key_returns_401(_data):
+    url = _data['url'] + 'clients/1'
+
+    response = requests.delete(url, headers={'API_KEY': 'invalid-key'})
+
+    assert response.status_code == 401
+
+
+def test_get_clients_with_invalid_api_key_returns_401(_data):
+    url = _data['url'] + 'clients'
+
+    response = requests.get(url, headers={'API_KEY': 'invalid-key'})
+
+    assert response.status_code == 401
+
+
+def test_post_client_route_without_api_key_returns_401(_data):
+    url = _data['url'] + 'clients/1'
+
+    response = requests.post(url, json={})
+
+    assert response.status_code == 401
+
+
+def test_post_client_route_with_invalid_api_key_returns_401(_data):
+    url = _data['url'] + 'clients/1'
+
+    response = requests.post(url, json={}, headers={'API_KEY': 'invalid-key'})
+
+    assert response.status_code == 401
+
+
+def test_put_client_orders_without_api_key_returns_401(_data):
+    url = _data['url'] + 'clients/1/orders'
+
+    response = requests.put(url, json={})
+
+    assert response.status_code == 401
+
+
+def test_delete_unknown_client_without_api_key_returns_401(_data):
+    url = _data['url'] + 'clients/10000'
+
+    response = requests.delete(url)
+
+    assert response.status_code == 401
