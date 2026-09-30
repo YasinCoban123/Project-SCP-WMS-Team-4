@@ -14,8 +14,8 @@ def _data():
     }
 
 
-def test_get_ReturnsAllItems(_data):
-    url = _data['url'] + 'items'
+def test_get_ReturnsAllItemGroups(_data):
+    url = _data['url'] + 'item_groups'
 
     # Send a GET request to the API
     response = requests.get(url, headers={'API_KEY': _data['api_key']})
@@ -26,8 +26,8 @@ def test_get_ReturnsAllItems(_data):
     assert status_code == 200
 
 
-def test_get_ReturnsItem1(_data):
-    url = _data['url'] + 'items/1'
+def test_get_ReturnsItemGroup1(_data):
+    url = _data['url'] + 'item_groups/1'
 
     # Send a GET request to the API
     response = requests.get(url, headers={'API_KEY': _data['api_key']})
@@ -38,8 +38,8 @@ def test_get_ReturnsItem1(_data):
     assert status_code == 200
 
 
-def test_get_ReturnsItem999999(_data):
-    url = _data['url'] + 'items/999999'
+def test_get_ReturnsItemGroup100000(_data):
+    url = _data['url'] + 'item_groups/100000'
 
     # Send a GET request to the API
     response = requests.get(url, headers={'API_KEY': _data['api_key']})
@@ -50,8 +50,8 @@ def test_get_ReturnsItem999999(_data):
     assert status_code == 404
 
 
-def test_get_ReturnsItemsWithoutApiKey(_data):
-    url = _data['url'] + 'items'
+def test_get_ReturnsItemGroupsWithoutApiKey(_data):
+    url = _data['url'] + 'item_groups'
 
     # Send a GET request to the API without an API key
     response = requests.get(url)
@@ -62,13 +62,15 @@ def test_get_ReturnsItemsWithoutApiKey(_data):
     assert status_code == 401
 
 
-def test_post_Item999001GetsAddedWithFullBody(_data):
-    url = _data['url'] + 'items'
+def test_post_ItemGroup999001GetsAddedWithFullBody(_data):
+    url = _data['url'] + 'item_groups'
 
     body = {
         "id": 999001,
-        "name": "Integration Test Item",
+        "name": "Integration test group",
         "description": "Created by integration test",
+        "created_at": "2025-08-01T15:30:26Z",
+        "updated_at": "2025-08-01T15:30:26Z"
     }
 
     # Send a POST request to the API
@@ -80,12 +82,12 @@ def test_post_Item999001GetsAddedWithFullBody(_data):
     assert status_code == 201
 
 
-def test_post_Item999002GetsAddedWithHalfBody(_data):
-    url = _data['url'] + 'items'
+def test_post_ItemGroup999002GetsAddedWithHalfBody(_data):
+    url = _data['url'] + 'item_groups'
 
     body = {
         "id": 999002,
-        "name": "Integration Test Item half body",
+        "name": "Integration test group half body",
     }
 
     # Send a POST request to the API
@@ -97,15 +99,17 @@ def test_post_Item999002GetsAddedWithHalfBody(_data):
     assert status_code == 400
 
 
-def test_put_UpdatesItem999001WithFullBody(_data):
-    item_id = 999001
-    url = _data['url'] + f'items/{item_id}'
+def test_put_UpdatesItemGroup1WithFullBody(_data):
+    item_group_id = 1
+    url = _data['url'] + f'item_groups/{item_group_id}'
 
-    # Data to update the item with
+    # Data to update the item group with
     body = {
-        "id": item_id,
-        "name": "Aangepaste naam",
-        "description": "Nieuwe beschrijving",
+        "id": item_group_id,
+        "name": "over datum",
+        "description": "Updated description",
+        "created_at": "2025-08-01T15:30:26Z",
+        "updated_at": "2025-08-02T10:00:00Z"
     }
 
     # Send a PUT request to the API
@@ -117,14 +121,14 @@ def test_put_UpdatesItem999001WithFullBody(_data):
     assert status_code == 200
 
 
-def test_put_UpdatesItem999001WithHalfBody(_data):
-    item_id = 999001
-    url = _data['url'] + f'items/{item_id}'
+def test_put_UpdatesItemGroup1WithHalfBody(_data):
+    item_group_id = 1
+    url = _data['url'] + f'item_groups/{item_group_id}'
 
-    # Data to update the item with
+    # Data to update the item group with
     body = {
-        "id": item_id,
-        "name": "Updated Integration Test Item",
+        "id": item_group_id,
+        "name": "over datum",
     }
 
     # Send a PUT request to the API
@@ -136,14 +140,14 @@ def test_put_UpdatesItem999001WithHalfBody(_data):
     assert status_code == 200
 
 
-def test_put_UpdatesItem999999(_data):
-    item_id = 999999
-    url = _data['url'] + f'items/{item_id}'
+def test_put_UpdatesItemGroup100000(_data):
+    item_group_id = 100000
+    url = _data['url'] + f'item_groups/{item_group_id}'
 
     body = {
-        "id": item_id,
+        "id": item_group_id,
         "name": "does not exist",
-        "description": "Nieuwe beschrijving",
+        "description": "Updated description",
     }
 
     # Send a PUT request to the API
@@ -155,33 +159,9 @@ def test_put_UpdatesItem999999(_data):
     assert status_code == 404
 
 
-def test_get_ReturnsInventoryOfItem999001(_data):
-    url = _data['url'] + 'items/999001/inventory'
-
-    # Send a GET request to the API
-    response = requests.get(url, headers={'API_KEY': _data['api_key']})
-
-    status_code = response.status_code
-
-    # Verify that the status code is 200 (OK)
-    assert status_code == 200
-
-
-def test_get_ReturnsInventoryTotalsOfItem999001(_data):
-    url = _data['url'] + 'items/999001/inventory/totals'
-
-    # Send a GET request to the API
-    response = requests.get(url, headers={'API_KEY': _data['api_key']})
-
-    status_code = response.status_code
-
-    # Verify that the status code is 200 (OK)
-    assert status_code == 200
-
-
-def test_delete_DeletesItem999001(_data):
-    item_id = 999001
-    url = _data['url'] + f'items/{item_id}'
+def test_delete_DeletesItemGroup999001(_data):
+    item_group_id = 999001
+    url = _data['url'] + f'item_groups/{item_group_id}'
 
     # Send a DELETE request to the API
     response = requests.delete(url, headers={'API_KEY': _data['api_key']})
@@ -192,9 +172,9 @@ def test_delete_DeletesItem999001(_data):
     assert status_code == 200
 
 
-def test_delete_DeletesItem999999(_data):
-    item_id = 999999
-    url = _data['url'] + f'items/{item_id}'
+def test_delete_DeletesItemGroup100000(_data):
+    item_group_id = 100000
+    url = _data['url'] + f'item_groups/{item_group_id}'
 
     # Send a DELETE request to the API
     response = requests.delete(url, headers={'API_KEY': _data['api_key']})

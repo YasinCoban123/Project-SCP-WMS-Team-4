@@ -18,11 +18,14 @@ from models.shipment_items import ShipmentItems
 
 DEBUG = False
 
+
 _ROOT = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "..", "data")
 )
 
 ROOT_PATH = _ROOT + os.sep
+
+print("ROOT_PATH:", ROOT_PATH)
 
 def fetch_warehouse_pool():
     return Warehouses(ROOT_PATH, DEBUG)
