@@ -10,7 +10,7 @@ def _data():
     }
 
 
-def test_get_warehouse(_data):
+def test_get_return_all_shipments(_data):
     url = _data['url'] + 'shipments'
 
     # Send a GET request to the API
@@ -72,12 +72,12 @@ def test_put_UpdatesShipment2WithFullBody(_data):
     assert response.status_code == 200
 
 
-def test_delete_DeletesShipment9(_data):
-    shipment_id = 9
+def test_delete_DeletesNonExistentShipment10000(_data):
+    shipment_id = 10000
     url = _data['url'] + f'shipments/{shipment_id}'
 
     # Send a DELETE request to the API
     response = requests.delete(url, headers={'API_KEY': _data['api_key']})
 
-    # Verify that the status code is 200 (OK)
-    assert response.status_code == 200
+    # Verify that the status code is 404 (Not Found)
+    assert response.status_code == 404

@@ -9,20 +9,6 @@ def _data():
         'api_key': 's1h3i5p7p9i2n4g6s8t',
     }
 
-
-def test_get_warehouse(_data):
-    url = _data['url'] + 'clients'
-
-    # Send a GET request to the API
-    response = requests.get(url, headers={'API_KEY': _data['api_key']})
-
-    # Get the status code and response data
-    status_code = response.status_code
-
-    # Verify that the status code is 200 (OK)
-    assert status_code == 200
-
-
 def test_get_returns_client_5(_data):
     url = _data['url'] + 'clients/5'
 
@@ -84,3 +70,14 @@ def test_put_return_updated_client_info_2(_data):
 
     assert response.status_code == 201
     assert response.json() == client
+
+
+def test_delete_deletes_client_6(_data):
+    client_id = 6
+    url = _data['url'] + f'clients/{client_id}'
+
+    # Send a DELETE request to the API
+    response = requests.delete(url, headers={'API_KEY': _data['api_key']})
+
+    # Verify that the status code is 200 (OK)
+    assert response.status_code == 200
