@@ -408,8 +408,8 @@
       "transfers": {
         "get": true,
         "post": false,
-        "put": false,
-        "delete": false
+        "put": true,
+        "delete": true
       },
       "items": {
         "get": true,
