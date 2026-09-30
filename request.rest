@@ -1,3 +1,55 @@
-get http://localhost:3000/api/v1/item_groups/1
-API_KEY: d4s2a0b0a1n4a0l0y7t
+# put http://localhost:3000/api/v1/items/1
+# Content-Type: item.application/json
+# API_KEY: d4s2a0b0a1n4a0l0y7t
 
+# {
+#     "name": "Aangepaste naam",
+#     "description": "Nieuwe beschrijving"
+# }
+
+# get http://localhost:3000/api/v1/item_lines/1
+# Content-Type: item.application/json
+# API_KEY: d4s2a0b0a1n4a0l0y7t
+
+# put http://localhost:3000/api/v1/item_lines/1
+# Content-Type: application/json
+# API_KEY: d4s2a0b0a1n4a0l0y7t
+
+# {
+#   "id": 1,
+#   "name": "Aardappelen, groente en fruit",
+#   "description": "Updated description",
+#   "created_at": "2025-08-01T15:30:26Z"
+# }
+
+# get http://localhost:3000/api/v1/item_lines/1
+# Content-Type: application/json
+# API_KEY: d4s2a0b0a1n4a0l0y7t
+
+# post http://localhost:3000/api/v1/item_lines/1
+# Content-Type: application/json
+# API_KEY: d4s2a0b0a1n4a0l0y7t
+# {
+#     "id": 1,
+#     "name": "grond",
+#     "description": "cool description",
+# }
+
+# get http://localhost:3000/api/v1/item_groups/1
+# Content-Type: application/json
+# API_KEY: d4s2a0b0a1n4a0l0y7t
+
+# put http://localhost:3000/api/v1/item_groups/1
+# Content-Type: application/json
+# API_KEY: d4s2a0b0a1n4a0l0y7t
+
+# {
+#   "id": 1,
+#   "name": "over datum",
+#   "description": "Updated description",
+#   "created_at": "2025-08-01T15:30:26Z"
+# }
+
+delete http://localhost:3000/api/v1/item_groups/100000
+Content-Type: application/json
+API_KEY: d4s2a0b0a1n4a0l0y7t
