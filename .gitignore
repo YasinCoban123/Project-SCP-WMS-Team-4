@@ -427,7 +427,6 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
-
 # Python virtual environment
 .venv/
 venv/
@@ -446,6 +445,13 @@ Lib/
 pyvenv.cfg
 pip-selfcheck.json
 
+# Python cache
+__pycache__/
+.pytest_cache/
+
+# Environment variables
+.env
+*.env
 # Cache folders
 __pycache__/
 .pytest_cache/
