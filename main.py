@@ -39,6 +39,7 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
         pool = fetch_pool()
         getattr(pool, add_name)(new_data)
         pool.save()
+        notification_processor.push(f"Scheduled batch transfer {new_data['id']}")
         self._send_status(201)
        
     def do_GET(self):
