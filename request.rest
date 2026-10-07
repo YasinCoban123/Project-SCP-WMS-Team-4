@@ -50,64 +50,68 @@
 #   "created_at": "2025-08-01T15:30:26Z"
 # }
 
-get http://localhost:3000/api/v1/item_groups
+# get http://localhost:3000/api/v1/item_groups
+# Content-Type: application/json
+# API_KEY: d4s2a0b0a1n4a0l0y7t
+
+
+# @host = http://localhost:3000/api/v1
+# @key = d4s2a0b0a1n4a0l0y7t
+
+# ### GET alle warehouses
+# GET {{host}}/warehouses
+# API_KEY: {{key}}
+
+# ### GET één warehouse
+# GET {{host}}/warehouses/1
+# API_KEY: {{key}}
+
+# ### POST nieuw warehouse
+# POST {{host}}/warehouses
+# API_KEY: {{key}}
+# Content-Type: application/json
+
+# {
+#   "id": 9999,
+#   "code": "TEST0001",
+#   "name": "Test warehouse",
+#   "address": "Teststraat 1",
+#   "zip": "1234AB",
+#   "city": "Rotterdam",
+#   "province": "Zuid-Holland",
+#   "country": "NL",
+#   "contact": {
+#     "name": "Test Persoon",
+#     "phone": "0612345678",
+#     "email": "test@example.com"
+#   }
+# }
+
+# ### PUT warehouse aanpassen
+# PUT {{host}}/warehouses/9999
+# API_KEY: {{key}}
+# Content-Type: application/json
+
+# {
+#   "id": 9999,
+#   "code": "TEST0001",
+#   "name": "Test warehouse aangepast",
+#   "address": "Teststraat 2",
+#   "zip": "1234AB",
+#   "city": "Rotterdam",
+#   "province": "Zuid-Holland",
+#   "country": "NL",
+#   "contact": {
+#     "name": "Test Persoon",
+#     "phone": "0612345678",
+#     "email": "test@example.com"
+#   }
+# }
+
+# ### DELETE warehouse
+# DELETE {{host}}/warehouses/9999
+# API_KEY: {{key}}
+
+get http://localhost:3000/api/v1/warehouses/10000
 Content-Type: application/json
 API_KEY: d4s2a0b0a1n4a0l0y7t
-
-
-@host = http://localhost:3000/api/v1
-@key = d4s2a0b0a1n4a0l0y7t
-
-### GET alle warehouses
-GET {{host}}/warehouses
-API_KEY: {{key}}
-
-### GET één warehouse
-GET {{host}}/warehouses/1
-API_KEY: {{key}}
-
-### POST nieuw warehouse
-POST {{host}}/warehouses
-API_KEY: {{key}}
-Content-Type: application/json
-
-{
-  "id": 9999,
-  "code": "TEST0001",
-  "name": "Test warehouse",
-  "address": "Teststraat 1",
-  "zip": "1234AB",
-  "city": "Rotterdam",
-  "province": "Zuid-Holland",
-  "country": "NL",
-  "contact": {
-    "name": "Test Persoon",
-    "phone": "0612345678",
-    "email": "test@example.com"
-  }
-}
-
-### PUT warehouse aanpassen
-PUT {{host}}/warehouses/9999
-API_KEY: {{key}}
-Content-Type: application/json
-
-{
-  "id": 9999,
-  "code": "TEST0001",
-  "name": "Test warehouse aangepast",
-  "address": "Teststraat 2",
-  "zip": "1234AB",
-  "city": "Rotterdam",
-  "province": "Zuid-Holland",
-  "country": "NL",
-  "contact": {
-    "name": "Test Persoon",
-    "phone": "0612345678",
-    "email": "test@example.com"
-  }
-}
-
-### DELETE warehouse
-DELETE {{host}}/warehouses/9999
-API_KEY: {{key}}
