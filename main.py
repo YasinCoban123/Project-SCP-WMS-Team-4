@@ -4,7 +4,7 @@ import json
 
 from providers import auth_provider
 from providers import data_provider
-from models.post_validation import has_required_fields
+from models.post_validation import has_required_fields, id_exists
 from models.required_fields import REQUIRED_FIELDS
 from processors import notification_processor
 
@@ -35,7 +35,10 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
             return
 
         fetch_pool, add_name = adders[paths[0]]
-        content_length = int(self.headers["Content-Length"])
+        content_length = int(self.headers.get("Content-Length", 0))
+        if content_length <= 0:
+            self._send_status(400)
+            return
         new_data = json.loads(self.rfile.read(content_length).decode())
         required_fields = REQUIRED_FIELDS[paths[0]]
 
@@ -43,6 +46,10 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
             self._send_status(400)
             return 
         pool = fetch_pool()
+        if paths[0] != "inventories":
+            if id_exists(pool.data, new_data["id"]):
+                self._send_status(409)
+                return
         getattr(pool, add_name)(new_data)
         pool.save()
         if paths[0] == "transfers":      
