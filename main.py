@@ -4,7 +4,8 @@ import json
 
 from providers import auth_provider
 from providers import data_provider
-
+from models.post_validation import has_required_fields
+from models.required_fields import REQUIRED_FIELDS
 from processors import notification_processor
 
 class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
@@ -36,10 +37,16 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
         fetch_pool, add_name = adders[paths[0]]
         content_length = int(self.headers["Content-Length"])
         new_data = json.loads(self.rfile.read(content_length).decode())
+        required_fields = REQUIRED_FIELDS[paths[0]]
+
+        if not has_required_fields(new_data, required_fields):
+            self._send_status(400)
+            return 
         pool = fetch_pool()
         getattr(pool, add_name)(new_data)
         pool.save()
-        notification_processor.push(f"Scheduled batch transfer {new_data['id']}")
+        if paths[0] == "transfers":      
+            notification_processor.push(f"Scheduled batch transfer {new_data['id']}")
         self._send_status(201)
        
     def do_GET(self):
