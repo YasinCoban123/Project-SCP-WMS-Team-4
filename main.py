@@ -339,6 +339,14 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
         inventory_pool = data_provider.fetch_inventory_pool()
         transfer = transfer_pool.get_transfer(transfer_id)
 
+        if transfer is None:
+            self._send_status(404)
+            return
+
+        if transfer.get("transfer_status") == "Processed":
+            self._send_status(400)
+            return
+
         for x in transfer["items"]:
             self._move_inventory(
                 inventory_pool,
