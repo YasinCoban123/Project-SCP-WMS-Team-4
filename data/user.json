@@ -7,13 +7,13 @@
         "get": true,
         "post": false,
         "put": false,
-        "delete": false
+        "delete": true
       },
       "locations": {
         "get": true,
         "post": false,
         "put": false,
-        "delete": false
+        "delete": true
       },
       "transfers": {
         "get": true,
