@@ -20,7 +20,7 @@ DEBUG = False
 
 
 _ROOT = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "..", "data")
+    os.path.join(os.path.dirname(__file__), "..", "data_test")
 )
 
 ROOT_PATH = _ROOT + os.sep
