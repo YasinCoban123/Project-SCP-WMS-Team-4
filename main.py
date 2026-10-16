@@ -70,6 +70,8 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
                 self.handle_get_version_1(paths[3:], user)
             else:
                 self._send_status(404)
+        except ValueError:
+            self._send_status(400)
         except Exception:
             self._send_status(500)
 
@@ -105,10 +107,13 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
         if len(paths) == 1:
             self._send_json(pool.get_warehouses())
         elif len(paths) == 2:
-            self._send_json(pool.get_warehouse(int(paths[1])))
+            self._send_json_or_404(pool.get_warehouse(int(paths[1])))
         elif len(paths) == 3 and paths[2] == "locations":
             locations = data_provider.fetch_location_pool()
-            self._send_json(locations.get_locations_in_warehouse(int(paths[1])))
+            self._send_sub_or_404(
+                pool.get_warehouse(int(paths[1])),
+                locations.get_locations_in_warehouse(int(paths[1])),
+            )
         else:
             self._send_status(404)
 
@@ -118,7 +123,7 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
         if len(paths) == 1:
             self._send_json(pool.get_locations())
         elif len(paths) == 2:
-            self._send_json(pool.get_location(int(paths[1])))
+            self._send_json_or_404(pool.get_location(int(paths[1])))
         else:
             self._send_status(404)
 
@@ -128,9 +133,12 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
         if len(paths) == 1:
             self._send_json(pool.get_transfers())
         elif len(paths) == 2:
-            self._send_json(pool.get_transfer(int(paths[1])))
+            self._send_json_or_404(pool.get_transfer(int(paths[1])))
         elif len(paths) == 3 and paths[2] == "items":
-            self._send_json(pool.get_items_in_transfer(int(paths[1])))
+            self._send_sub_or_404(
+                pool.get_transfer(int(paths[1])),
+                pool.get_items_in_transfer(int(paths[1])),
+            )
         else:
             self._send_status(404)
 
@@ -140,13 +148,19 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
         if len(paths) == 1:
             self._send_json(pool.get_items())
         elif len(paths) == 2:
-            self._send_json(pool.get_item(int(paths[1])))
+            self._send_json_or_404(pool.get_item(int(paths[1])))
         elif len(paths) == 3 and paths[2] == "inventory":
             inventory = data_provider.fetch_inventory_pool()
-            self._send_json(inventory.get_inventories_for_item(int(paths[1])))
+            self._send_sub_or_404(
+                pool.get_item(int(paths[1])),
+                inventory.get_inventories_for_item(int(paths[1])),
+            )
         elif len(paths) == 4 and paths[2:] == ["inventory", "totals"]:
             inventory = data_provider.fetch_inventory_pool()
-            self._send_json(inventory.get_inventory_totals_for_item(int(paths[1])))
+            self._send_sub_or_404(
+                pool.get_item(int(paths[1])),
+                inventory.get_inventory_totals_for_item(int(paths[1])),
+            )
         else:
             self._send_status(404)
 
@@ -156,10 +170,13 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
         if len(paths) == 1:
             self._send_json(pool.get_item_lines())
         elif len(paths) == 2:
-            self._send_json(pool.get_item_line(int(paths[1])))
+            self._send_json_or_404(pool.get_item_line(int(paths[1])))
         elif len(paths) == 3 and paths[2] == "items":
             items = data_provider.fetch_item_pool()
-            self._send_json(items.get_items_for_item_line(int(paths[1])))
+            self._send_sub_or_404(
+                pool.get_item_line(int(paths[1])),
+                items.get_items_for_item_line(int(paths[1])),
+            )
         else:
             self._send_status(404)
 
@@ -169,10 +186,13 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
         if len(paths) == 1:
             self._send_json(pool.get_item_groups())
         elif len(paths) == 2:
-            self._send_json(pool.get_item_group(int(paths[1])))
+            self._send_json_or_404(pool.get_item_group(int(paths[1])))
         elif len(paths) == 3 and paths[2] == "items":
             items = data_provider.fetch_item_pool()
-            self._send_json(items.get_items_for_item_group(int(paths[1])))
+            self._send_sub_or_404(
+                pool.get_item_group(int(paths[1])),
+                items.get_items_for_item_group(int(paths[1])),
+            )
         else:
             self._send_status(404)
 
@@ -182,10 +202,13 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
         if len(paths) == 1:
             self._send_json(pool.get_item_types())
         elif len(paths) == 2:
-            self._send_json(pool.get_item_type(int(paths[1])))
+            self._send_json_or_404(pool.get_item_type(int(paths[1])))
         elif len(paths) == 3 and paths[2] == "items":
             items = data_provider.fetch_item_pool()
-            self._send_json(items.get_items_for_item_type(int(paths[1])))
+            self._send_sub_or_404(
+                pool.get_item_type(int(paths[1])),
+                items.get_items_for_item_type(int(paths[1])),
+            )
         else:
             self._send_status(404)
 
@@ -202,10 +225,13 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
         if len(paths) == 1:
             self._send_json(pool.get_suppliers())
         elif len(paths) == 2:
-            self._send_json(pool.get_supplier(int(paths[1])))
+            self._send_json_or_404(pool.get_supplier(int(paths[1])))
         elif len(paths) == 3 and paths[2] == "items":
             items = data_provider.fetch_item_pool()
-            self._send_json(items.get_items_for_supplier(int(paths[1])))
+            self._send_sub_or_404(
+                pool.get_supplier(int(paths[1])),
+                items.get_items_for_supplier(int(paths[1])),
+            )
         else:
             self._send_status(404)
 
@@ -215,9 +241,12 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
         if len(paths) == 1:
             self._send_json(pool.get_orders())
         elif len(paths) == 2:
-            self._send_json(pool.get_order(int(paths[1])))
+            self._send_json_or_404(pool.get_order(int(paths[1])))
         elif len(paths) == 3 and paths[2] == "items":
-            self._send_json(pool.get_items_in_order(int(paths[1])))
+            self._send_sub_or_404(
+                pool.get_order(int(paths[1])),
+                pool.get_items_in_order(int(paths[1])),
+            )
         else:
             self._send_status(404)
 
@@ -227,10 +256,13 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
         if len(paths) == 1:
             self._send_json(pool.get_clients())
         elif len(paths) == 2:
-            self._send_json(pool.get_client(int(paths[1])))
+            self._send_json_or_404(pool.get_client(int(paths[1])))
         elif len(paths) == 3 and paths[2] == "orders":
             orders = data_provider.fetch_order_pool()
-            self._send_json(orders.get_orders_for_client(int(paths[1])))
+            self._send_sub_or_404(
+                pool.get_client(int(paths[1])),
+                orders.get_orders_for_client(int(paths[1])),
+            )
         else:
             self._send_status(404)
 
@@ -240,11 +272,17 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
         if len(paths) == 1:
             self._send_json(pool.get_shipments())
         elif len(paths) == 2:
-            self._send_json(pool.get_shipment(int(paths[1])))
+            self._send_json_or_404(pool.get_shipment(int(paths[1])))
         elif len(paths) == 3 and paths[2] == "orders":
-            self._send_json(pool.get_order_ids_in_shipment(int(paths[1])))
+            self._send_sub_or_404(
+                pool.get_shipment(int(paths[1])),
+                pool.get_order_ids_in_shipment(int(paths[1])),
+            )
         elif len(paths) == 3 and paths[2] == "items":
-            self._send_json(pool.get_items_in_shipment(int(paths[1])))
+            self._send_sub_or_404(
+                pool.get_shipment(int(paths[1])),
+                pool.get_items_in_shipment(int(paths[1])),
+            )
         else:
             self._send_status(404)
 
@@ -257,6 +295,21 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
     def _send_status(self, status_code):
         self.send_response(status_code)
         self.end_headers()
+
+    def _send_json_or_404(self, value):
+        """Stuurt 404 als de opgevraagde resource niet bestaat (None, {} of [])."""
+        if not value:
+            self._send_status(404)
+        else:
+            self._send_json(value)
+
+    def _send_sub_or_404(self, parent, value):
+        """Voor sub-routes (bv. /warehouses/5/locations): 404 als de parent niet bestaat.
+        Een bestaande parent met een lege lijst blijft gewoon 200 met []."""
+        if not parent:
+            self._send_status(404)
+        else:
+            self._send_json(value)
 
     def _read_json_body(self):
         content_length = int(self.headers.get("Content-Length", 0))
