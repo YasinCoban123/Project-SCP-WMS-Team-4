@@ -485,6 +485,9 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
 
         fetch_pool, remove_name = removers[paths[0]]
         pool = fetch_pool()
+        if not id_exists(pool.data, int(paths[1])):
+            self._send_status(404)
+            return
         getattr(pool, remove_name)(int(paths[1]))
         self._save_and_respond(pool)
 
