@@ -11,9 +11,19 @@ class Shipments(Base):
         self.load(is_debug)
 
     def get_shipments(self):
+        shipment_items = data_provider.fetch_shipment_item_pool().data
+        items_by_shipment = {}
+        for item in shipment_items:
+            items_by_shipment.setdefault(item["shipment_id"], []).append({
+                "item_id": item["item_id"],
+                "amount": item["amount"],
+            })
+
         result = []
         for x in self.data:
-            result.append(self._with_items(x))
+            shipment = dict(x)
+            shipment["items"] = items_by_shipment.get(shipment["id"], [])
+            result.append(shipment)
         return result
 
     def get_shipment(self, shipment_id):

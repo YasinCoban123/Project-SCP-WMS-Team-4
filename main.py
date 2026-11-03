@@ -35,8 +35,8 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
             self._send_status(404)
             return
 
-        if not self._is_valid_id(paths[1]):
-            self._send_status(400)
+        if len(paths) != 1:
+            self._send_status(404)
             return
 
         fetch_pool, add_name = adders[paths[0]]

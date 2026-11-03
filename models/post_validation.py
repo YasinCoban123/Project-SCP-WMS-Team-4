@@ -15,6 +15,8 @@ def id_exists(existing_data, new_id):
 
 def has_correct_types(data, field_types):
     for field, expected_type in field_types.items():
+        if field not in data:
+            continue
         if isinstance(expected_type, tuple):
             allowed_types = expected_type
         else:
