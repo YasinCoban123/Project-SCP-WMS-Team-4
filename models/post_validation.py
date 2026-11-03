@@ -12,3 +12,15 @@ def id_exists(existing_data, new_id):
         if record["id"] == new_id:
             return True
     return False
+
+def has_correct_types(data, field_types):
+    for field, expected_type in field_types.items():
+        if isinstance(expected_type, tuple):
+            allowed_types = expected_type
+        else:
+            allowed_types = (expected_type,)
+
+        if type(data[field]) not in allowed_types:
+            return False
+
+    return True

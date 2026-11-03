@@ -4,9 +4,10 @@ import json
 
 from providers import auth_provider
 from providers import data_provider
-from models.post_validation import has_required_fields, id_exists
+from models.post_validation import has_required_fields, id_exists, has_correct_types
 from models.required_fields import REQUIRED_FIELDS
 from processors import notification_processor
+from models.field_types import FIELD_TYPES
 
 class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
     
@@ -45,6 +46,12 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
         if not has_required_fields(new_data, required_fields):
             self._send_status(400)
             return 
+        if paths[0] in FIELD_TYPES:
+            field_types = FIELD_TYPES[paths[0]]
+
+            if not has_correct_types(new_data, field_types):
+                self._send_status(400)
+                return
         pool = fetch_pool()
         if paths[0] != "inventories":
             if id_exists(pool.data, new_data["id"]):
