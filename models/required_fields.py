@@ -47,7 +47,7 @@ REQUIRED_FIELDS = {
     "shipments": [
         "id", "reference", "order_id", "shipment_date",
         "shipment_type", "shipment_status", "carrier_name",
-        "shipping_method", "payment_type", "items"
+        "shipping_method", "payment_type"
     ],
 
     "transfers": [

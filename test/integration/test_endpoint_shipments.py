@@ -23,11 +23,11 @@ def test_get_return_all_shipments(_data):
     assert status_code == 200
 
 
-def test_post_Shipment2016GetsAddedWithFullBody(_data):
+def test_post_Shipment9999GetsAddedWithFullBody(_data):
     url = _data['url'] + 'shipments'
 
     body = {
-        "id": 2016,
+        "id": 9999,
         "reference": "SHP-002016",
         "order_id": 1,
         "shipment_date": "2026-06-21T22:43:23Z",
