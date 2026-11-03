@@ -129,3 +129,8 @@ FIELD_TYPES = {
         "items": list
     }
 }
+
+ORDER_ITEM_TYPES = {
+    "item_id": int,
+    "amount": int
+}
