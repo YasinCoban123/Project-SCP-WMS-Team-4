@@ -35,6 +35,10 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
             self._send_status(404)
             return
 
+        if not self._is_valid_id(paths[1]):
+            self._send_status(400)
+            return
+
         fetch_pool, add_name = adders[paths[0]]
         content_length = int(self.headers.get("Content-Length", 0))
         if content_length <= 0:
@@ -89,6 +93,9 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
     def handle_get_version_1(self, paths, user):
         if not auth_provider.has_access(user, paths, "get"):
             self._send_status(403)
+            return
+        if len(paths) > 1 and not self._is_valid_id(paths[1]):
+            self._send_status(400)
             return
 
         handlers = {
@@ -356,6 +363,9 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
         if not auth_provider.has_access(user, paths, "put"):
             self._send_status(403)
             return
+        if len(paths) < 2 or not self._is_valid_id(paths[1]):
+            self._send_status(400)
+            return
 
         handlers = {
             "transfers": self._put_transfers,
@@ -383,6 +393,14 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
         if paths[0] not in updaters or len(paths) != 2:
             self._send_status(404)
             return
+        
+        fetch_pool, update_name = updaters[paths[0]]
+        pool = fetch_pool()
+        resource_id = int(paths[1])
+        
+        if not id_exists(pool.data, resource_id):
+            self._send_status(404)
+            return
 
         fetch_pool, update_name = updaters[paths[0]]
         pool = fetch_pool()
@@ -394,6 +412,9 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
     def _put_transfers(self, paths):
         if len(paths) == 2:
             pool = data_provider.fetch_transfer_pool()
+            if not id_exists(pool.data, int(paths[1])):
+                self._send_status(404)
+                return
             self._update_and_respond(pool, int(paths[1]), self._read_json_body(), pool.update_transfer)
         elif len(paths) == 3 and paths[2] == "commit":
             self._commit_transfer(int(paths[1]))
@@ -454,6 +475,9 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
 
     def _put_orders(self, paths):
         pool = data_provider.fetch_order_pool()
+        if not id_exists(pool.data, int(paths[1])):
+                self._send_status(404)
+                return
 
         if len(paths) == 2:
             self._update_and_respond(pool, int(paths[1]), self._read_json_body(), pool.update_order)
@@ -464,6 +488,9 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
 
     def _put_shipments(self, paths):
         pool = data_provider.fetch_shipment_pool()
+        if not id_exists(pool.data, int(paths[1])):
+                self._send_status(404)
+                return
 
         if len(paths) == 2:
             self._update_and_respond(pool, int(paths[1]), self._read_json_body(), pool.update_shipment)
@@ -477,6 +504,10 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
     def handle_delete_version_1(self, paths, user):
         if not auth_provider.has_access(user, paths, "delete"):
             self._send_status(403)
+            return
+        
+        if len(paths) > 1 and not self._is_valid_id(paths[1]):
+            self._send_status(400)
             return
 
         removers = {
@@ -496,6 +527,7 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
         if paths[0] not in removers or len(paths) < 2:
             self._send_status(404)
             return
+    
 
         fetch_pool, remove_name = removers[paths[0]]
         pool = fetch_pool()
@@ -535,6 +567,9 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
             except Exception:
                 self.send_response(500)
                 self.end_headers()
+                
+    def _is_valid_id(self, value):
+        return value.isdigit()
 
 if __name__ == "__main__":
     PORT = 3000
