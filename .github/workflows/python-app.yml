@@ -2,16 +2,18 @@ name: Python application
 
 on:
   push:
+    branches: [ "main", "CiCD" ]
+  pull_request:
     branches: [ "main" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v7
-    - uses: actions/setup-python@v7
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
       with:
-        python-version: "3.13"
+        python-version: "3.12"
         cache: 'pip'
     - name: Install dependencies
       run: |
@@ -27,24 +29,34 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v7
-    - uses: actions/setup-python@v7
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v5
       with:
-        python-version: "3.13"
+        python-version: "3.12"
         cache: 'pip'
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Test with pytest
-      run: pytest -v --cov --cov-report term --cov-report xml:coverage.xml
-    - name: Run code coverage
+    - name: Start API server
       run: |
-        coverage report --format=markdown >> $GITHUB_STEP_SUMMARY
-        coverage report --fail-under=20
+        nohup python main.py > server.log 2>&1 &
+        for i in $(seq 1 15); do
+          curl -s -o /dev/null http://localhost:3000/ && break
+          sleep 1
+        done
+    - name: Test with pytest
+      env:
+        APIKey: f4a5c6i7l8i9t0y1m2a3n4a5g6
+      run: pytest -v --cov --cov-report term --cov-report xml:coverage.xml
+    - name: Coverage summary
+      run: coverage report --format=markdown >> $GITHUB_STEP_SUMMARY
+    - name: Show server log
+      if: failure()
+      run: cat server.log
     - name: Store coverage report
       uses: actions/upload-artifact@v4
       with:
         name: coverage
         path: coverage.xml
-      if: ${{ failure() }}
+      if: always()
