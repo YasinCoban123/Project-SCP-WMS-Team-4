@@ -1,2 +1,2 @@
-DELETE HTTP/1.1 http://localhost:3000/api/v1/warehouses/1
+get http://localhost:3000/api/v1/warehouses/
 API_KEY: d4s2a0b0a1n4a0l0y7t
