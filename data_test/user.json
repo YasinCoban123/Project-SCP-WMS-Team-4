@@ -407,15 +407,15 @@
       },
       "transfers": {
         "get": true,
-        "post": false,
+        "post": true,
         "put": true,
         "delete": true
       },
       "items": {
         "get": true,
-        "post": false,
-        "put": false,
-        "delete": false
+        "post": true,
+        "put": true,
+        "delete": true
       },
       "item_lines": {
         "get": true,
@@ -443,9 +443,9 @@
       },
       "orders": {
         "get": true,
-        "post": false,
-        "put": false,
-        "delete": false
+        "post": true,
+        "put": true,
+        "delete": true
       },
       "clients": {
         "get": true,
@@ -455,15 +455,15 @@
       },
       "shipments": {
         "get": true,
-        "post": false,
-        "put": false,
-        "delete": false
+        "post": true,
+        "put": true,
+        "delete": true
       },
       "inventories": {
         "get": true,
-        "post": false,
-        "put": false,
-        "delete": false
+        "post": true,
+        "put": true,
+        "delete": true
       }
     }
   }

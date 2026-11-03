@@ -404,6 +404,9 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
 
         fetch_pool, update_name = updaters[paths[0]]
         pool = fetch_pool()
+        if not id_exists(pool.data, int(paths[1])):
+            self._send_status(404)
+            return
         self._update_and_respond(pool, int(paths[1]), self._read_json_body(), getattr(pool, update_name))
 
     def _put_transfers(self, paths):

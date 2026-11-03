@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-API_KEY = os.getenv("API_KEY")
+API_KEY = "f4a5c6i7l8i9t0y1m2a3n4a5g6"
 
 
 @pytest.fixture
