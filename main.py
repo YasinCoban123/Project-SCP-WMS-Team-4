@@ -335,6 +335,29 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
         post_data = self.rfile.read(content_length)
         return json.loads(post_data.decode())
 
+    def _read_validated_body(self, resource):
+        try:
+            data = self._read_json_body()
+        except ValueError:
+            self._send_status(400)
+            return None
+
+        if not has_required_fields(data, REQUIRED_FIELDS[resource]):
+            self._send_status(400)
+            return None
+
+        if resource in FIELD_TYPES:
+            if not has_correct_types(data, FIELD_TYPES[resource]):
+                self._send_status(400)
+                return None
+
+        if resource == "orders":
+            if not has_valid_items(data.get("items"), ORDER_ITEM_TYPES):
+                self._send_status(400)
+                return None
+
+        return data
+
     def _save_and_respond(self, pool):
         pool.save()
         self.send_response(200)
@@ -393,21 +416,20 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
         if paths[0] not in updaters or len(paths) != 2:
             self._send_status(404)
             return
-        
+
         fetch_pool, update_name = updaters[paths[0]]
         pool = fetch_pool()
         resource_id = int(paths[1])
-        
+
         if not id_exists(pool.data, resource_id):
             self._send_status(404)
             return
 
-        fetch_pool, update_name = updaters[paths[0]]
-        pool = fetch_pool()
-        if not id_exists(pool.data, int(paths[1])):
-            self._send_status(404)
+        new_data = self._read_validated_body(paths[0])
+        if new_data is None:
             return
-        self._update_and_respond(pool, int(paths[1]), self._read_json_body(), getattr(pool, update_name))
+
+        self._update_and_respond(pool, resource_id, new_data, getattr(pool, update_name))
 
     def _put_transfers(self, paths):
         if len(paths) == 2:
@@ -415,7 +437,12 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
             if not id_exists(pool.data, int(paths[1])):
                 self._send_status(404)
                 return
-            self._update_and_respond(pool, int(paths[1]), self._read_json_body(), pool.update_transfer)
+
+            new_data = self._read_validated_body("transfers")
+            if new_data is None:
+                return
+
+            self._update_and_respond(pool, int(paths[1]), new_data, pool.update_transfer)
         elif len(paths) == 3 and paths[2] == "commit":
             self._commit_transfer(int(paths[1]))
         else:
@@ -475,29 +502,62 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
 
     def _put_orders(self, paths):
         pool = data_provider.fetch_order_pool()
-        if not id_exists(pool.data, int(paths[1])):
-                self._send_status(404)
-                return
+        order_id = int(paths[1])
+
+        if not id_exists(pool.data, order_id):
+            self._send_status(404)
+            return
 
         if len(paths) == 2:
-            self._update_and_respond(pool, int(paths[1]), self._read_json_body(), pool.update_order)
+            new_data = self._read_validated_body("orders")
+            if new_data is None:
+                return
+            self._update_and_respond(pool, order_id, new_data, pool.update_order)
+
         elif len(paths) == 3 and paths[2] == "items":
-            self._update_and_respond(pool, int(paths[1]), self._read_json_body(), pool.update_items_in_order)
+            try:
+                items = self._read_json_body()
+            except ValueError:
+                self._send_status(400)
+                return
+            if not has_valid_items(items, ORDER_ITEM_TYPES):
+                self._send_status(400)
+                return
+            self._update_and_respond(pool, order_id, items, pool.update_items_in_order)
+
         else:
             self._send_status(404)
 
     def _put_shipments(self, paths):
         pool = data_provider.fetch_shipment_pool()
-        if not id_exists(pool.data, int(paths[1])):
-                self._send_status(404)
-                return
+        shipment_id = int(paths[1])
+
+        if not id_exists(pool.data, shipment_id):
+            self._send_status(404)
+            return
 
         if len(paths) == 2:
-            self._update_and_respond(pool, int(paths[1]), self._read_json_body(), pool.update_shipment)
-        elif len(paths) == 3 and paths[2] == "orders":
-            self._update_and_respond(pool, int(paths[1]), self._read_json_body(), pool.update_orders_in_shipment)
-        elif len(paths) == 3 and paths[2] == "items":
-            self._update_and_respond(pool, int(paths[1]), self._read_json_body(), pool.update_items_in_shipment)
+            new_data = self._read_validated_body("shipments")
+            if new_data is None:
+                return
+            self._update_and_respond(pool, shipment_id, new_data, pool.update_shipment)
+
+        elif len(paths) == 3 and paths[2] in ("orders", "items"):
+            try:
+                body = self._read_json_body()
+            except ValueError:
+                self._send_status(400)
+                return
+            if not isinstance(body, list):
+                self._send_status(400)
+                return
+            handler = (
+                pool.update_orders_in_shipment
+                if paths[2] == "orders"
+                else pool.update_items_in_shipment
+            )
+            self._update_and_respond(pool, shipment_id, body, handler)
+
         else:
             self._send_status(404)
             
