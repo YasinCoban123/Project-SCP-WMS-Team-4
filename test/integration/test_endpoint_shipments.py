@@ -23,11 +23,11 @@ def test_get_return_all_shipments(_data):
     assert status_code == 200
 
 
-def test_post_Shipment9999GetsAddedWithFullBody(_data):
+def test_post_Shipment999903GetsAddedWithFullBody(_data):
     url = _data['url'] + 'shipments'
 
     body = {
-        "id": 9999,
+        "id": 999903,
         "reference": "SHP-002016",
         "order_id": 1,
         "shipment_date": "2026-06-21T22:43:23Z",
@@ -177,3 +177,135 @@ def test_delete_unknown_shipment_without_api_key_returns_401(_data):
     response = requests.delete(url)
 
     assert response.status_code == 401
+
+
+def test_get_shipment_returns_expected_data(_data):
+    response = requests.get(
+        _data['url'] + 'shipments/1',
+        headers={'API_KEY': _data['api_key']},
+    )
+
+    assert response.status_code == 200
+    shipment = response.json()
+    assert shipment['id'] == 1
+    assert shipment['reference']
+    assert shipment['order_id'] == 1
+    assert isinstance(shipment['items'], list)
+
+
+def test_get_shipments_returns_non_empty_list(_data):
+    response = requests.get(
+        _data['url'] + 'shipments',
+        headers={'API_KEY': _data['api_key']},
+    )
+
+    assert response.status_code == 200
+    shipments = response.json()
+    assert isinstance(shipments, list)
+    assert shipments
+    assert any(shipment['id'] == 1 for shipment in shipments)
+    assert all(isinstance(shipment['items'], list) for shipment in shipments)
+
+
+def test_post_shipment_can_be_retrieved_after_creation(_data):
+    shipment = {
+        'id': 999901,
+        'reference': 'SHP-INTEGRATION-001',
+        'order_id': 1,
+        'shipment_date': '2026-11-03T20:00:00Z',
+        'shipment_type': 'Outgoing',
+        'shipment_status': 'Scheduled',
+        'carrier_name': 'DHL Parcel',
+        'shipping_method': 'Standard',
+        'payment_type': 'Automated',
+    }
+
+    create_response = requests.post(
+        _data['url'] + 'shipments',
+        headers={'API_KEY': _data['api_key']},
+        json=shipment,
+    )
+    get_response = requests.get(
+        _data['url'] + 'shipments/999901',
+        headers={'API_KEY': _data['api_key']},
+    )
+
+    assert create_response.status_code == 201
+    assert get_response.status_code == 200
+    assert get_response.json()['reference'] == shipment['reference']
+    assert get_response.json()['shipment_status'] == shipment['shipment_status']
+
+
+def test_put_shipment_changes_persisted_data(_data):
+    shipment = {
+        'id': 2,
+        'reference': 'SHP-INTEGRATION-UPDATED',
+        'order_id': 3,
+        'shipment_date': '2026-11-04T20:00:00Z',
+        'shipment_type': 'Outgoing',
+        'shipment_status': 'Delivered',
+        'carrier_name': 'PostNL',
+        'shipping_method': 'Express',
+        'payment_type': 'Manual',
+    }
+
+    update_response = requests.put(
+        _data['url'] + 'shipments/2',
+        headers={'API_KEY': _data['api_key']},
+        json=shipment,
+    )
+    get_response = requests.get(
+        _data['url'] + 'shipments/2',
+        headers={'API_KEY': _data['api_key']},
+    )
+
+    assert update_response.status_code == 200
+    assert get_response.status_code == 200
+    updated_shipment = get_response.json()
+    assert updated_shipment['id'] == 2
+    assert updated_shipment['reference'] == shipment['reference']
+    assert updated_shipment['shipment_status'] == shipment['shipment_status']
+
+
+def test_delete_shipment_removes_it_from_api(_data):
+    shipment = {
+        'id': 999902,
+        'reference': 'SHP-INTEGRATION-DELETE',
+        'order_id': 1,
+        'shipment_date': '2026-11-05T20:00:00Z',
+        'shipment_type': 'Incoming',
+        'shipment_status': 'Scheduled',
+        'carrier_name': 'GLS',
+        'shipping_method': 'Standard',
+        'payment_type': 'Manual',
+    }
+
+    create_response = requests.post(
+        _data['url'] + 'shipments',
+        headers={'API_KEY': _data['api_key']},
+        json=shipment,
+    )
+    delete_response = requests.delete(
+        _data['url'] + 'shipments/999902',
+        headers={'API_KEY': _data['api_key']},
+    )
+    get_response = requests.get(
+        _data['url'] + 'shipments/999902',
+        headers={'API_KEY': _data['api_key']},
+    )
+
+    assert create_response.status_code == 201
+    assert delete_response.status_code == 200
+    assert get_response.status_code == 404
+
+
+def test_get_shipment_orders_returns_expected_order(_data):
+    response = requests.get(
+        _data['url'] + 'shipments/1/orders',
+        headers={'API_KEY': _data['api_key']},
+    )
+
+    assert response.status_code == 200
+    order_ids = response.json()
+    assert isinstance(order_ids, list)
+    assert order_ids == [1]
