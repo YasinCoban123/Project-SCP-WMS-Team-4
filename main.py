@@ -378,6 +378,8 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
                 paths = self.path.split("/")
                 if len(paths) > 3 and paths[1] == "api" and paths[2] == "v1":
                     self.handle_post_version_1(paths[3:], user)
+                else:
+                    self._send_status(404)
             except Exception:
                 self.send_response(500)
                 self.end_headers()
@@ -608,6 +610,8 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
                 paths = self.path.split("/")
                 if len(paths) > 3 and paths[1] == "api" and paths[2] == "v1":
                     self.handle_put_version_1(paths[3:], user)
+                else:
+                   self._send_status(404)
             except Exception:
                 self.send_response(500)
                 self.end_headers()
@@ -624,6 +628,8 @@ class ApiRequestHandler(http.server.BaseHTTPRequestHandler):
                 paths = self.path.split("/")
                 if len(paths) > 3 and paths[1] == "api" and paths[2] == "v1":
                     self.handle_delete_version_1(paths[3:], user)
+                else:
+                    self._send_status(404)
             except Exception:
                 self.send_response(500)
                 self.end_headers()
