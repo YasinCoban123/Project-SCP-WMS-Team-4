@@ -67,8 +67,23 @@ def test_post_Item999001GetsAddedWithFullBody(_data):
 
     body = {
         "id": 999001,
-        "name": "Integration Test Item",
+        "code": "ITM-999001",
         "description": "Created by integration test",
+        "barcode": "4313291212999",
+        "model_number": "VS-99999",
+        "commodity_code": 6268604,
+        "unit_weight": 0.336,
+        "item_line_id": 5,
+        "item_group_id": 3,
+        "item_type_id": 2,
+        "min_purchase_qty": 24,
+        "case_size": 6,
+        "packaging_type": "Case",
+        "order_multiple": 1,
+        "supplier_id": 17,
+        "supplier_sku": "SKU-9999999",
+        "created_at": "2025-12-04T08:02:10Z",
+        "updated_at": "2025-12-26T07:33:27Z"
     }
 
     # Send a POST request to the API

@@ -51,7 +51,7 @@ def test_post_Warehouse2016GetsAddedWithFullBody(_data):
     url = _data['url'] + 'warehouses'
 
     body = {
-            "id": "2016",
+            "id": 2016,
             "code": "JUR-NNN",
             "name": "Jumbo DC Hal reference",
             "address": "De Wijnhaven 409",
@@ -78,7 +78,7 @@ def test_post_Warehouse2018GetsAddedWithHalfBody(_data):
     url = _data['url'] + 'warehouses'
 
     body = {
-            "id": "2018",
+            "id": 2018,
             "code": "JUR-NNN",
             "name": "Jumbo DC Hal reference",
             "address": "De Wijnhaven 409",
@@ -144,7 +144,7 @@ def test_put_UpdatesNonExistentWarehouse1000WithFullBody(_data):
     status_code = response.status_code
 
     # Verify that the status code is 200 (OK)
-    assert status_code == 200
+    assert status_code == 404
 
 def test_put_UpdatesWarehouse1WithHalfBody(_data):
     warehouse_id = 1
@@ -167,7 +167,7 @@ def test_put_UpdatesWarehouse1WithHalfBody(_data):
     status_code = response.status_code
 
     # Verify that the status code is 200 (OK)
-    assert status_code == 200
+    assert status_code == 400
     
 
 

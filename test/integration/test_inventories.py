@@ -99,7 +99,7 @@ def test_put_inventories(_data):
 
     status_code = response.status_code
 
-    assert status_code == 404
+    assert status_code == 400
     # Actual endpoint currently returns 404 for PUT /inventories.
 
 

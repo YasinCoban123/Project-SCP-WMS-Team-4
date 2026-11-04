@@ -137,7 +137,7 @@ def test_put_UpdatesItemGroup1WithHalfBody(_data):
     status_code = response.status_code
 
     # Verify that the status code is 200 (OK)
-    assert status_code == 200
+    assert status_code == 400
 
 
 def test_put_UpdatesItemGroup100000(_data):
