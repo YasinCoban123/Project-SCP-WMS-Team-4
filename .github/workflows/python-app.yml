@@ -24,6 +24,10 @@ jobs:
         run: |
           python -m pip install pip-audit
           python -m pip_audit -r requirements.txt
+      - name: Scan Python code with Bandit
+        run: |
+          python -m pip install bandit==1.9.4
+          python -m bandit -r main.py check_field_types.py models providers processors -ll
       - name: Lint with flake8
         continue-on-error: true
         run: |
