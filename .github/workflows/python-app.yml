@@ -74,6 +74,19 @@ jobs:
           cat server.log
           exit 1
 
+      # Pytest mag hier niet zelf de job laten falen: de 80%-check hieronder beslist.
       - name: Run integration tests
         timeout-minutes: 10
-        run: python -m pytest test/integration -v
+        run: python -m pytest test/integration -v --junitxml=report.xml || true
+
+      - name: Check pass rate (minimum 80%)
+        run: python test/check_pass_rate.py report.xml 80
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-test-report
+          path: |
+            report.xml
+            server.log
