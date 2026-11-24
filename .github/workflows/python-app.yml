@@ -74,6 +74,16 @@ jobs:
           cat server.log
           exit 1
 
+      # De 80%-check zit in test/integration/conftest.py
       - name: Run integration tests
         timeout-minutes: 10
-        run: python -m pytest test/integration -v
+        run: python -m pytest test/integration -v --junitxml=report.xml
+
+      - name: Upload test report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: integration-test-report
+          path: |
+            report.xml
+            server.log

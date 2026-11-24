@@ -38,3 +38,19 @@
 #     # zodat tests elkaar niet beinvloeden en data niet word gewijzigd
 #     for file, data in original_data.items():
 #         open(file, "wb").write(data)
+
+
+# Minimaal percentage tests dat moet slagen
+MINIMUM = 80
+
+
+# Pytest roept deze functie automatisch aan als alle tests klaar zijn
+def pytest_sessionfinish(session, exitstatus):
+    total = session.testscollected
+    failed = session.testsfailed
+    percentage = (total - failed) / total * 100
+
+    print(f"\n{total - failed} van de {total} tests geslaagd ({percentage:.1f}%)")
+
+    # 0 = geslaagd (pipeline groen), 1 = mislukt (pipeline rood)
+    session.exitstatus = 0 if percentage >= MINIMUM else 1
